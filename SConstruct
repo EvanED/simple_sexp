@@ -2,8 +2,8 @@
 
 env = Environment()
 
-env["CXX"] = "/s/gcc-4.6.1/bin/g++"
-env["CC"] = "/s/gcc-4.6.1/bin/gcc"
+#env["CXX"] = "/s/gcc-4.6.1/bin/g++"
+#env["CC"] = "/s/gcc-4.6.1/bin/gcc"
 
 env.Append(CPPPATH=["#/include"])
 env.Append(CCFLAGS=["-g", "-Wall", "-Wextra", "-Wnon-virtual-dtor", "-Werror"])
