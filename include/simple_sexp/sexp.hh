@@ -14,7 +14,7 @@ namespace simple_sexp
     
     ///
     /// Base class for all s-expressions.
-    class SExp : std::enable_shared_from_this<SExp>
+    class SExp : public std::enable_shared_from_this<SExp>
     {
     public:
         /// The following is a reference-counted smart pointer to SExp. It is
