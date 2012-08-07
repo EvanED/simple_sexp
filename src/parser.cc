@@ -42,10 +42,10 @@ struct tokens : lex::lexer<Lexer>
 
 template <typename Iterator>
 struct sexp_grammar
-    : qi::grammar<Iterator, SExp::Ptr, space_type>
+    : qi::grammar<Iterator, SExp::Ptr(), space_type>
 {
-    qi::rule<Iterator, SExp::Ptr, space_type> sexp;
-    qi::rule<Iterator, vector<SExp::Ptr>, space_type> sexp_list;
+    qi::rule<Iterator, SExp::Ptr(), space_type> sexp;
+    qi::rule<Iterator, vector<SExp::Ptr>(), space_type> sexp_list;
 
     sexp_grammar()
 	: sexp_grammar::base_type(sexp)
