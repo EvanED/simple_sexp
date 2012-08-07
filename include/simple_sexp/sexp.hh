@@ -49,6 +49,31 @@ namespace simple_sexp
         accept(SExpVisitor & visitor) const CPP11_OVERRIDE;
     };
 
+    class StringExp : public LeafExp
+    {
+    public:
+        StringExp(std::string const & str)
+            : LeafExp(str)
+        {}
+    };
+
+    class SymbolExp : public LeafExp
+    {
+    public:
+        SymbolExp(std::string const & str)
+            : LeafExp(str)
+        {}
+    };
+
+    class IntExp : public LeafExp
+    {
+    public:
+        IntExp(std::string const & str, int i)
+            : LeafExp(str)
+        {}
+    };
+       
+
 
     ///
     /// This represents a list.
