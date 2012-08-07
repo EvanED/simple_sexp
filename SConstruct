@@ -2,11 +2,13 @@
 
 env = Environment()
 
-#env["CXX"] = "/s/gcc-4.6.1/bin/g++"
-#env["CC"] = "/s/gcc-4.6.1/bin/gcc"
+boost_inc_path = "/unsup/boost-1.49.0/include"
 
-env.Append(CPPPATH=["#/include"])
-env.Append(CCFLAGS=["-g", "-Wall", "-Wextra", "-Wnon-virtual-dtor", "-Werror"])
+env["CXX"] = "/s/gcc-4.6.1/bin/g++"
+env["CC"] = "/s/gcc-4.6.1/bin/gcc"
+
+env.Append(CPPPATH=["#/include", boost_inc_path])
+env.Append(CCFLAGS=["-g", "-Wall", "-Wextra", "-Wnon-virtual-dtor"])
 env.Append(CXXFLAGS=["-std=c++0x"])
 env.Append(LINKFLAGS=["-g"])
 
