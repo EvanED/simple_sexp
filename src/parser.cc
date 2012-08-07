@@ -37,15 +37,17 @@ struct tokens : lex::lexer<Lexer>
 	    ("[0-9]+", Tokens::Integer_Literal)
             ("[a-zA-Z]+", Tokens::Symbol)
             ;
+
+        this->self("WS") = lex::token_def<>("[ \\t\\n]+");
     }
 };
 
-template <typename Iterator>
+template <typename Iterator, typename Lexer>
 struct sexp_grammar
-    : qi::grammar<Iterator, SExp::Ptr()>
+    : qi::grammar<Iterator, SExp::Ptr(), qi::in_state_skipper<Lexer>>
 {
-    qi::rule<Iterator, SExp::Ptr()> sexp;
-    qi::rule<Iterator, vector<SExp::Ptr>()> sexp_list;
+    qi::rule<Iterator, SExp::Ptr(), qi::in_state_skipper<Lexer>> sexp;
+    qi::rule<Iterator, vector<SExp::Ptr>(), qi::in_state_skipper<Lexer>> sexp_list;
 
     sexp_grammar()
 	: sexp_grammar::base_type(sexp)
@@ -80,11 +82,12 @@ parse()
     typedef tokens<lexer_type>::iterator_type iterator_type;
 
     tokens<lexer_type> lexer;
-    sexp_grammar<iterator_type> parser;
+    sexp_grammar<iterator_type, lexer_type> parser;
 
     std::string s = "(a b (1))";
     char const * begin = s.c_str();
     char const * end = begin + s.size();
 
-    lex::tokenize_and_parse(begin, end, lexer, parser);
+    std::string ws = "WS";
+    lex::tokenize_and_parse_phrase(begin, end, lexer, parser, qi::in_state(ws)[tokens.self]);
 }
