@@ -13,6 +13,7 @@ env.Append(LINKFLAGS=["-g"])
 
 sources = Split("""
     src/sexp.cc
+    src/parser.cc
 """)
 
 env.SharedLibrary("simple_sexp", sources)
