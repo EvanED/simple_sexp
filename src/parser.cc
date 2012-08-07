@@ -10,7 +10,7 @@ namespace lex = boost::spirit::lex;
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-using simple_sexp::SExp;
+using namespace simple_sexp;
 using ascii::space_type;
 using std::vector;
 
@@ -42,24 +42,28 @@ struct tokens : lex::lexer<Lexer>
 
 template <typename Iterator>
 struct sexp_grammar
-    : qi::grammar<Iterator, SExp::Ptr(), space_type>
+    : qi::grammar<Iterator, SExp::Ptr()>
 {
-    qi::rule<Iterator, SExp::Ptr(), space_type> sexp;
-    qi::rule<Iterator, vector<SExp::Ptr>(), space_type> sexp_list;
+    qi::rule<Iterator, SExp::Ptr()> sexp;
+    qi::rule<Iterator, vector<SExp::Ptr>()> sexp_list;
 
     sexp_grammar()
 	: sexp_grammar::base_type(sexp)
     {
 	using qi::token;
+        using boost::spirit::_val;
+        using boost::spirit::_1;
 	using namespace Tokens;
 
-	sexp_list = *sexp;
+	sexp_list %= *sexp;
 
-	sexp = token(String_Literal)
-	    |  token(Integer_Literal)
-	    |  token(Symbol)
+	sexp = token(String_Literal)   [ _val = SExp::Ptr(new StringExp("")) ]
+	    |  token(Integer_Literal)  [ _val = SExp::Ptr(new IntExp("", 0)) ]
+	    |  token(Symbol)           [ _val = SExp::Ptr(new SymbolExp("")) ]
 	    | (token(L_Paren)
-	       >> sexp_list
+	       >> sexp_list            [ [&_val](std::vector<SExp::Ptr> const & attr) {
+                                                     _val = SExp::Ptr(new ListExp(attr));
+                                         }]
 	       >> token(R_Paren)
 	       );
     }
