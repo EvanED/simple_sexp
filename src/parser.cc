@@ -8,6 +8,7 @@
 
 namespace lex = boost::spirit::lex;
 namespace qi = boost::spirit::qi;
+namespace ascii = boost::spirit::ascii;
 
 namespace Tokens {
     enum Token {
@@ -35,9 +36,10 @@ struct tokens : lex::lexer<Lexer>
 };
 
 template <typename Iterator>
-struct sexp_grammar : qi::grammar<Iterator>
+struct sexp_grammar
+    : qi::grammar<Iterator, simple_sexp::SExp::Ptr, ascii::space_type>
 {
-    qi::rule<simple_sexp::SExp::Ptr> sexp;
+    qi::rule<Iterator, simple_sexp::SExp::Ptr, ascii::space_type> sexp;
 
     sexp_grammar()
     {
