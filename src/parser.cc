@@ -48,11 +48,12 @@ struct sexp_grammar
     qi::rule<Iterator, vector<SExp::Ptr>, space_type> sexp_list;
 
     sexp_grammar()
+	: sexp_grammar::base_type(sexp)
     {
 	using qi::token;
 	using namespace Tokens;
 
-	sexp_list %= *sexp;
+	sexp_list = *sexp;
 
 	sexp = token(String_Literal)
 	    |  token(Integer_Literal)
@@ -63,3 +64,23 @@ struct sexp_grammar
 	       );
     }
 };
+
+
+SExp::Ptr
+parse()
+{
+    typedef lex::lexertl::token<
+        char const*, boost::mpl::vector<std::string>
+	> token_type;
+    typedef lex::lexertl::lexer<token_type> lexer_type;
+    typedef tokens<lexer_type>::iterator_type iterator_type;
+
+    tokens<lexer_type> lexer;
+    sexp_grammar<iterator_type> parser;
+
+    std::string s = "(a b (1))";
+    char const * begin = s.c_str();
+    char const * end = begin + s.size();
+
+    lex::tokenize_and_parse(begin, end, lexer, parser);
+}
