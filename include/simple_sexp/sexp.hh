@@ -114,7 +114,7 @@ namespace simple_sexp
 
     extern
     SExp::Ptr
-    parse_from_string();
+    parse_from_string(std::string const & str);
 }
 
 
