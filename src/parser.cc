@@ -1,90 +1,31 @@
 #include <simple_sexp/sexp.hh>
 
-#include <boost/spirit/include/qi.hpp>
-#include <boost/spirit/include/lex_lexertl.hpp>
-#include <boost/spirit/include/phoenix_operator.hpp>
-#include <boost/spirit/include/phoenix_statement.hpp>
-#include <boost/spirit/include/phoenix_container.hpp>
+#include <boost/tokenizer.hpp>
 
-namespace lex = boost::spirit::lex;
-namespace qi = boost::spirit::qi;
-namespace ascii = boost::spirit::ascii;
+#include "lexer.hh"
 
-using namespace simple_sexp;
-using ascii::space_type;
-using std::vector;
+#include <iostream>
 
+int main()
+{
+    std::string s = "a b (1 2))";
+    
+    typedef boost::tokenizer<basic_regular_expression_matcher<char> > tokenizer;
 
-namespace Tokens {
-    enum Token {
-        L_Paren,
-        R_Paren,
-        String_Literal,
-        Integer_Literal,
-        Symbol
-    };
+    basic_regular_expression_matcher<char> matcher;
+    try {
+        matcher.add_regex("a");
+        matcher.add_regex("\\)");
+    }
+    catch (std::exception & e) {
+        std::cout << "Exception: " << e.what() << "\n";
+        throw;
+    }
+    
+    tokenizer tok(s.begin(), s.end(), matcher);
+    
+    for(tokenizer::iterator beg=tok.begin(); beg!=tok.end();++beg){
+        std::cout << *beg << "\n";
+    }
 }
 
-template <typename Lexer>
-struct tokens : lex::lexer<Lexer>
-{
-    tokens()
-    {
-        this->self.add
-            ("(", Tokens::L_Paren)
-            (")", Tokens::R_Paren)
-            ("\"...\"", Tokens::String_Literal)
-	    ("[0-9]+", Tokens::Integer_Literal)
-            ("[a-zA-Z]+", Tokens::Symbol)
-            ;
-    }
-};
-
-template <typename Iterator>
-struct sexp_grammar
-    : qi::grammar<Iterator, SExp::Ptr()>
-{
-    qi::rule<Iterator, SExp::Ptr()> sexp;
-    qi::rule<Iterator, vector<SExp::Ptr>()> sexp_list;
-
-    sexp_grammar()
-	: sexp_grammar::base_type(sexp)
-    {
-	using qi::token;
-        using boost::spirit::_val;
-        using boost::spirit::_1;
-	using namespace Tokens;
-
-	sexp_list %= *sexp;
-
-	sexp = token(String_Literal)   [ _val = SExp::Ptr(new StringExp("")) ]
-	    |  token(Integer_Literal)  [ _val = SExp::Ptr(new IntExp("", 0)) ]
-	    |  token(Symbol)           [ _val = SExp::Ptr(new SymbolExp("")) ]
-	    | (token(L_Paren)
-	       >> sexp_list            [ [&_val](std::vector<SExp::Ptr> const & attr) {
-                                                     _val = SExp::Ptr(new ListExp(attr));
-                                         }]
-	       >> token(R_Paren)
-	       );
-    }
-};
-
-
-SExp::Ptr
-parse()
-{
-    typedef lex::lexertl::token<
-        char const*, boost::mpl::vector<std::string>
-	> token_type;
-    typedef lex::lexertl::lexer<token_type> lexer_type;
-    typedef tokens<lexer_type>::iterator_type iterator_type;
-
-    tokens<lexer_type> lexer;
-    sexp_grammar<iterator_type> parser;
-
-    std::string s = "(a b (1))";
-    char const * begin = s.c_str();
-    char const * end = begin + s.size();
-
-    lex::tokenize_and_parse(begin, end, lexer, parser);
-}
