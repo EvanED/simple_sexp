@@ -2,17 +2,31 @@
 
 #include <boost/tokenizer.hpp>
 #include <boost/range/iterator_range.hpp>
+#include <boost/range/adaptor/filtered.hpp>
 
 #include "lexer.hh"
 
 #include <iostream>
+#include <typeinfo>
 
 using boost::iterator_range;
 using boost::make_iterator_range;
 
 
+bool
+is_not_whitespace(std::string const & s)
+{
+    return (s.size() > 0) && (s[0] != ' ');
+}
+
+
 template <typename ForwardRange>
-iterator_range<boost::tokenizer<basic_regular_expression_matcher<char>>::iterator>
+boost::range_detail::filtered_range<
+    bool (*)(const std::basic_string<char>&),
+    const boost::iterator_range<boost::token_iterator<basic_regular_expression_matcher<char>,
+                                                      std::string::const_iterator,
+                                                      std::string>>
+    >
 get_tokens(ForwardRange const & input)
 {
     typedef boost::tokenizer<basic_regular_expression_matcher<char> > tokenizer;
@@ -33,7 +47,9 @@ get_tokens(ForwardRange const & input)
     
     tokenizer tok(std::begin(input), std::end(input), matcher);
 
-    return make_iterator_range(tok.begin(), tok.end());
+    return
+        make_iterator_range(tok.begin(), tok.end())
+        | boost::adaptors::filtered(is_not_whitespace);
 }
 
 
