@@ -89,6 +89,23 @@ parse_sexp(ForwardIterator & next, ForwardIterator end)
 }
 
 
+class Printer : public SExpVisitor
+{
+public:
+    virtual void previsit_leaf(LeafExp const & leaf) {
+        std::cout << leaf.value() << " ";
+    }
+    
+    virtual void previsit_list(ListExp const & list) {
+        std::cout << "( ";
+    }
+    
+    virtual void postvisit_list(ListExp const & list) {
+        std:: cout << ") ";
+    }
+};
+
+
 
 int main()
 {
@@ -97,5 +114,8 @@ int main()
     auto range = get_tokens(s);
     auto next = range.begin();
     auto sexp = parse_sexp(next, range.end());
+
+    sexp->accept(Printer());
+    std::cout << "\n";
 }
 

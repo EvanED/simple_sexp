@@ -28,6 +28,11 @@ namespace simple_sexp
         void
         accept(SExpVisitor & visitor) const = 0;
         
+        void
+        accept(SExpVisitor && visitor) const {
+            accept(static_cast<SExpVisitor&>(visitor));
+        }
+
         virtual ~SExp() {}
     };
 
@@ -43,6 +48,9 @@ namespace simple_sexp
         LeafExp(std::string const & str)
             : str_(str)
         {}
+
+        std::string
+        value() const { return str_; }
 
         virtual
         void
@@ -91,15 +99,15 @@ namespace simple_sexp
         accept(SExpVisitor & visitor) const CPP11_OVERRIDE;
     };
 
-
     class SExpVisitor
     {
     public:
-        virtual void postvisit_leaf(LeafExp const & leaf, std::string const & str) = 0;
-        virtual void postvisit_list(ListExp const & list, std::vector<SExp::Ptr> const & children) = 0;
+        virtual void previsit_leaf(LeafExp const & leaf) {}
+        virtual void previsit_list(ListExp const & list) {}
 
-        virtual ~SExpVisitor() {}
-    };
+        virtual void postvisit_leaf(LeafExp const & leaf) {}
+        virtual void postvisit_list(ListExp const & list) {}
+    };        
 }
 
 

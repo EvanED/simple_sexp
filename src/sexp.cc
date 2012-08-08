@@ -5,16 +5,18 @@ namespace simple_sexp
     void
     LeafExp::accept(SExpVisitor & visitor) const
     {
-        visitor.postvisit_leaf(*this, this->str_);
+        visitor.previsit_leaf(*this);
+        visitor.postvisit_leaf(*this);
     }
 
     void
     ListExp::accept(SExpVisitor & visitor) const
     {
+        visitor.previsit_list(*this);
         for (auto child: this->children_) {
             child->accept(visitor);
         }
-        visitor.postvisit_list(*this, this->children_);
+        visitor.postvisit_list(*this);
     }
 }
 
