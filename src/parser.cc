@@ -97,25 +97,33 @@ public:
     }
     
     virtual void previsit_list(ListExp const & list) {
+        (void) list;
         std::cout << "( ";
     }
     
     virtual void postvisit_list(ListExp const & list) {
+        (void) list;
         std:: cout << ") ";
     }
 };
 
 
+namespace simple_sexp
+{
+    SExp::Ptr
+    parse_from_string(std::string const & str)
+    {
+        auto range = get_tokens(str);
+        auto next = range.begin();
+        return parse_sexp(next, range.end());
+    }
+}
+
 
 int main()
 {
     string s = "(a b (1 \"foo_bar\" 2))";
-
-    auto range = get_tokens(s);
-    auto next = range.begin();
-    auto sexp = parse_sexp(next, range.end());
-
-    sexp->accept(Printer());
+    parse_from_string(s)->accept(Printer());
     std::cout << "\n";
 }
 

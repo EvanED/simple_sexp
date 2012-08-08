@@ -102,12 +102,19 @@ namespace simple_sexp
     class SExpVisitor
     {
     public:
-        virtual void previsit_leaf(LeafExp const & leaf) {}
-        virtual void previsit_list(ListExp const & list) {}
+        virtual void previsit_leaf(LeafExp const & leaf) { (void) leaf; }
+        virtual void previsit_list(ListExp const & list) { (void) list; }
 
-        virtual void postvisit_leaf(LeafExp const & leaf) {}
-        virtual void postvisit_list(ListExp const & list) {}
-    };        
+        virtual void postvisit_leaf(LeafExp const & leaf) { (void) leaf; }
+        virtual void postvisit_list(ListExp const & list) { (void) list; }
+
+        virtual ~SExpVisitor() {}
+    };
+
+
+    extern
+    SExp::Ptr
+    parse_from_string();
 }
 
 
