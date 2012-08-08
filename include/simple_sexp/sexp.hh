@@ -104,6 +104,11 @@ namespace simple_sexp
             : children_(children)
         {}
 
+        std::vector<SExp::Ptr> const &
+        children() const {
+            return children_;
+        }
+
         virtual
         void
         accept(SExpVisitor & visitor) const CPP11_OVERRIDE;
