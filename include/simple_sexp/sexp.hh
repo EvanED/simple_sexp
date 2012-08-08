@@ -20,7 +20,7 @@ namespace simple_sexp
         /// The following is a reference-counted smart pointer to SExp. It is
         /// currently a std::shared_ptr, but this is not guaranteed to remain
         /// true in the future. However, it probably will.
-        typedef std::shared_ptr<SExp> Ptr;
+        typedef std::shared_ptr<SExp const> Ptr;
 
         ///
         /// Traverse this tree with the given visitor
