@@ -11,10 +11,11 @@
 
 using boost::iterator_range;
 using boost::make_iterator_range;
-
+using std::string;
+using namespace simple_sexp;
 
 bool
-is_not_whitespace(std::string const & s)
+is_not_whitespace(string const & s)
 {
     return (s.size() > 0) && (s[0] != ' ');
 }
@@ -23,9 +24,10 @@ is_not_whitespace(std::string const & s)
 template <typename ForwardRange>
 boost::range_detail::filtered_range<
     bool (*)(const std::basic_string<char>&),
-    const boost::iterator_range<boost::token_iterator<basic_regular_expression_matcher<char>,
-                                                      std::string::const_iterator,
-                                                      std::string>>
+    const boost::iterator_range<
+        boost::token_iterator<basic_regular_expression_matcher<char>,
+                              string::const_iterator,
+                              string>>
     >
 get_tokens(ForwardRange const & input)
 {
@@ -53,13 +55,47 @@ get_tokens(ForwardRange const & input)
 }
 
 
+
+template <typename ForwardIterator>
+SExp::Ptr
+parse_sexp(ForwardIterator & next, ForwardIterator end)
+{
+    assert(next != end);
+    string lexeme = *next;
+    assert(lexeme.size() > 0);
+    ++next;
+    
+    if (lexeme == "(") {
+        std::vector<SExp::Ptr> children;
+        while (*next != ")") {
+            children.push_back(parse_sexp(next, end));
+        }
+        // Forward over ")"
+        ++next;
+        return SExp::Ptr(new ListExp(children));
+    }
+
+    if (std::isdigit(lexeme[0])) {
+        return SExp::Ptr(new IntExp(lexeme));
+    }
+
+    if (lexeme[0] == '\"') {
+        return SExp::Ptr(new StringExp(lexeme));
+    }
+
+    assert(lexeme[0] != '(' && lexeme[0] != ')');
+
+    return SExp::Ptr(new SymbolExp(lexeme)); 
+}
+
+
+
 int main()
 {
-    std::string s = "(a b (1 \"foo_bar\" 2))";
+    string s = "(a b (1 \"foo_bar\" 2))";
 
     auto range = get_tokens(s);
-    for(auto token : range) {
-        std::cout << token << "\n";
-    }
+    auto next = range.begin();
+    auto sexp = parse_sexp(next, range.end());
 }
 

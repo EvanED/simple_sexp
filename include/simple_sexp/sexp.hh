@@ -68,7 +68,7 @@ namespace simple_sexp
     class IntExp : public LeafExp
     {
     public:
-        IntExp(std::string const & str, int i)
+        IntExp(std::string const & str)
             : LeafExp(str)
         {}
     };
