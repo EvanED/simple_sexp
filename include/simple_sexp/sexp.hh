@@ -1,6 +1,7 @@
 #ifndef SIMPLE_SEXP_SEXP_HH
 #define SIMPLE_SEXP_SEXP_HH
 
+#include <cassert>
 #include <vector>
 #include <memory>
 #include <string>
@@ -61,11 +62,17 @@ namespace simple_sexp
 
     class StringExp : public LeafExp
     {
+        static
+        std::string unescape(std::string str) {
+            assert(str[0] == '\"' && str[str.size()-1] =='\"');
+            return str.substr(1, str.size()-2);
+        }
+        
     public:
         typedef std::shared_ptr<StringExp const> Ptr;
         
         StringExp(std::string const & str)
-            : LeafExp(str)
+            : LeafExp(unescape(str))
         {}
     };
 
