@@ -22,4 +22,4 @@ sources = Split("""
 """)
 
 env.SharedLibrary("simple_sexp", sources)
-env.Program("simple_sexp", sources)
+

@@ -120,10 +120,11 @@ namespace simple_sexp
 }
 
 
+#if 0
 int main()
 {
     string s = "(a b (1 \"foo_bar\" 2))";
     parse_from_string(s)->accept(Printer());
     std::cout << "\n";
 }
-
+#endif
