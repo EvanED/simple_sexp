@@ -8,14 +8,18 @@
 
 int main()
 {
-    std::string s = "a b (1 2))";
+    std::string s = "(a b (1 \"foo_bar\" 2))";
     
     typedef boost::tokenizer<basic_regular_expression_matcher<char> > tokenizer;
 
     basic_regular_expression_matcher<char> matcher;
     try {
-        matcher.add_regex("a");
+        matcher.add_regex("\\(");
         matcher.add_regex("\\)");
+        matcher.add_regex("[a-zA-Z]+");
+        matcher.add_regex("[0-9]+");
+        matcher.add_regex("\"[^\"\\\\]*\"");
+        matcher.add_regex(" +");
     }
     catch (std::exception & e) {
         std::cout << "Exception: " << e.what() << "\n";

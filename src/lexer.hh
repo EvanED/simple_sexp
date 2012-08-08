@@ -42,7 +42,7 @@ public:
     {
         InputIterator start(next);
 
-        std::cout << "=== basic_regular_expression_matcher: operator()\n";
+        //std::cout << "=== basic_regular_expression_matcher: operator()\n";
 
         if (next == end) {
             return false;
@@ -62,7 +62,7 @@ public:
             bool matched = boost::regex_search(start, end, match, *current_regex,
                                              boost::regex_constants::match_continuous);
 
-            std::cout << "===    testing regex; " << (matched ? "match" : "no match") << "\n";
+            //std::cout << "===    testing regex; " << (matched ? "match" : "no match") << "\n";
             
             if (matched && match.length() > longest_length) {
                 longest_regex = current_regex;
