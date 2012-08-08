@@ -45,6 +45,8 @@ namespace simple_sexp
         std::string const str_;
         
     public:
+        typedef std::shared_ptr<LeafExp const> Ptr;
+        
         LeafExp(std::string const & str)
             : str_(str)
         {}
@@ -60,6 +62,8 @@ namespace simple_sexp
     class StringExp : public LeafExp
     {
     public:
+        typedef std::shared_ptr<StringExp const> Ptr;
+        
         StringExp(std::string const & str)
             : LeafExp(str)
         {}
@@ -68,6 +72,8 @@ namespace simple_sexp
     class SymbolExp : public LeafExp
     {
     public:
+        typedef std::shared_ptr<SymbolExp const> Ptr;
+        
         SymbolExp(std::string const & str)
             : LeafExp(str)
         {}
@@ -76,6 +82,8 @@ namespace simple_sexp
     class IntExp : public LeafExp
     {
     public:
+        typedef std::shared_ptr<IntExp const> Ptr;
+        
         IntExp(std::string const & str)
             : LeafExp(str)
         {}
@@ -90,6 +98,8 @@ namespace simple_sexp
         std::vector<SExp::Ptr> children_;
         
     public:
+        typedef std::shared_ptr<ListExp const> Ptr;
+        
         ListExp(std::vector<SExp::Ptr> const & children)
             : children_(children)
         {}
