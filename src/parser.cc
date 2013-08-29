@@ -31,10 +31,10 @@ struct tokens : lex::lexer<Lexer>
     tokens()
     {
         this->self.add
-            ("(", Tokens::L_Paren)
-            (")", Tokens::R_Paren)
-            ("\"...\"", Tokens::String_Literal)
-	    ("[0-9]+", Tokens::Integer_Literal)
+            ("(",         Tokens::L_Paren)
+            (")",         Tokens::R_Paren)
+            ("\"...\"",   Tokens::String_Literal)
+	    ("[0-9]+",    Tokens::Integer_Literal)
             ("[a-zA-Z]+", Tokens::Symbol)
             ;
     }
